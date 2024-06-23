@@ -18,7 +18,7 @@ init_elements(input,history,input_display);
 let greeting = document.getElementById("title").innerHTML;
 let credits = document.getElementById("opening_credits").innerHTML;
 let output_buffer = [];
-title_screen(output_buffer,credits,greeting);
+//title_screen(output_buffer,credits,greeting);
 
 let prompt = null;
 let start_prompt = {text: "start?",commands: [{command: "y", sequence: opening_dialogue}]};
