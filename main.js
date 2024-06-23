@@ -32,6 +32,17 @@ input.addEventListener("keydown",function (event){
     prompt = handle_input(event,history,input_display,output_buffer,prompt);
 });
 
+//continuing sequence
+window.addEventListener("keydown",function(event){
+    if (event.key == "Enter" && input.disabled){
+        let hist = history.value;
+        if (hist.slice(hist.length - 10,hist.length) == "Continue ↵"){
+            history.value = hist.slice(0,hist.length - 10);
+            typing(elements,output_buffer);
+        }
+    }
+});
+
 //move fake cursor and adjust textarea height
 input.addEventListener("input",function(){
     update_input(input,input_display);
@@ -42,7 +53,7 @@ input.addEventListener("selectionchange",function(){
 });
 
 //lock focus to input
-window.addEventListener("click", function(){
+window.addEventListener("mousemove", function(){
     input.focus();
 });
 //lock scroll to bottom of page
