@@ -5,9 +5,14 @@ import { get_elements } from "./init.js";
 import {init_elements} from "./init.js";
 import { update_input } from "./input.js";
 import { title_screen 
-        ,opening_dialogue } from "./sequences.js";
+        ,opening_dialogue 
+        ,proposition} from "./sequences.js";
 
 export const curs_char = "█";
+export const animate_typing = true;
+export const state = {
+    checkpoint: 0
+};
 
 //initialize elements
 let {input,history,input_display} = get_elements();
@@ -17,12 +22,15 @@ init_elements(input,history,input_display);
 //type a greeting for the user
 let greeting = document.getElementById("title").innerHTML;
 let credits = document.getElementById("opening_credits").innerHTML;
+export let templates = {greeting,credits};
 let output_buffer = [];
 //title_screen(output_buffer,credits,greeting);
 
 let prompt = null;
-let start_prompt = {text: "start?",commands: [{command: "y", sequence: opening_dialogue}]};
-prompt = new_prompt(output_buffer,start_prompt);
+//let start_prompt = {text: "start?",commands: [{command: "y", sequence: opening_dialogue}]};
+//prompt = new_prompt(output_buffer,title_screen(output_buffer));
+prompt = new_prompt(output_buffer,proposition(output_buffer));
+
 
 //start typing the greeting followed by the start prompt
 typing(elements,output_buffer);
@@ -30,6 +38,9 @@ typing(elements,output_buffer);
 //handle input from user
 input.addEventListener("keydown",function (event){
     prompt = handle_input(event,history,input_display,output_buffer,prompt);
+    if (prompt){
+        //prompt = new_prompt(output_buffer,prompt);
+    }
 });
 
 //continuing sequence
@@ -46,7 +57,7 @@ window.addEventListener("keydown",function(event){
 //move fake cursor and adjust textarea height
 input.addEventListener("input",function(){
     update_input(input,input_display);
-    console.log("got input");
+    //console.log("got input");
 });
 input.addEventListener("selectionchange",function(){
     update_input(input,input_display);

@@ -1,4 +1,6 @@
-import { curs_char} from "./main.js";
+import { curs_char
+        ,animate_typing
+        ,state} from "./main.js";
 
 export function typing(elements,output_buffer){
     let input = elements.input;
@@ -11,19 +13,34 @@ export function typing(elements,output_buffer){
         let use_delay = delay;
         let wait = false;
         if (text.length > 0){
-            if (text.slice(0,6) == "[wait]"){
+            //check for command
+            let command = "";
+            let check_at = 1;
+            if (text.slice(0,1) == "["){
+                while (text.slice(check_at,check_at + 1) != "]"){
+                    command += text.slice(check_at,check_at + 1);
+                    check_at ++;
+                }
+                check_at ++;
+            }
+            if (command == "wait"){
                 wait = true;
-                output_buffer[0] = {text: text.slice(6), delay: delay};
+                output_buffer[0] = {text: text.slice(check_at), delay: delay};
                 history.value += "Continue ↵";
             }
-            else if (text.slice(0,7) == "[clear]"){
+            else if (command == "clear"){
                 if (history.value.length > 0){
                     use_delay = 1;
-                    history.value = history.value.slice(2);
+                    let hist = history.value;
+                    history.value = hist.slice(0,state.checkpoint) + hist.slice(state.checkpoint + 2);
                 }
                 else{
-                    output_buffer[0] = {text: text.slice(7), delay: delay};
+                    output_buffer[0] = {text: text.slice(check_at), delay: delay};
                 }
+            }
+            else if (command == "checkpoint"){
+                state.checkpoint = history.value.length;
+                output_buffer[0] = {text: text.slice(check_at), delay: delay};
             }
             else{
                 if (!input.disabled){
@@ -49,7 +66,12 @@ export function typing(elements,output_buffer){
         }
         if (!wait){
             if (output_buffer.length > 0){
-                setTimeout(typing,use_delay,elements,output_buffer);
+                if (animate_typing){
+                    setTimeout(typing,use_delay,elements,output_buffer);
+                }
+                else{
+                    typing(elements,output_buffer);
+                }
             }
             else{
                 input.disabled = false;
@@ -65,14 +87,16 @@ export function typing(elements,output_buffer){
     }
 }
 export function new_prompt(output_buffer,prompt){
-    let prompt_text = prompt.text + " [";
-    prompt.commands.forEach((pair,index) => {
-        if (index > 0){
-            prompt_text += "/";
-        }
-        prompt_text += pair.command;
-    });
-    prompt_text += "]";
-    output_buffer.push({text: prompt_text, delay: 50});
+    if (prompt){
+        let prompt_text = prompt.text + " [";
+        prompt.commands.forEach((pair,index) => {
+            if (index > 0){
+                prompt_text += "/";
+            }
+            prompt_text += pair.command;
+        });
+        prompt_text += "]";
+        output_buffer.push({text: prompt_text, delay: 50});
+    }
     return prompt;
 }

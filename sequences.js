@@ -1,5 +1,11 @@
-export function title_screen(output_buffer,credits,greeting){
+import {templates
+       ,state} from "./main.js";
 
+export function title_screen(output_buffer){
+    let greeting = templates.greeting;
+    let credits = templates.credits;
+
+    output_buffer.push({text: "[clear]", delay: 0});
     output_buffer.push({text: credits, delay: 100});
     //output_buffer.push({text: "\n", delay: 0});
     output_buffer.push({text: "", delay: 1000});
@@ -9,6 +15,8 @@ export function title_screen(output_buffer,credits,greeting){
     output_buffer.push({text: "             a game for mini jam 161", delay: 50});
     output_buffer.push({text: "\n\n\n", delay: 0});
     output_buffer.push({text: "", delay: 1000});
+
+    return {text: "start?",commands: [{command: "y", sequence: opening_dialogue}]};
 }
 export function opening_dialogue(output_buffer){
     output_buffer.push({text: "[clear]",delay:0});
@@ -67,6 +75,38 @@ export function opening_dialogue(output_buffer){
     output_buffer.push({text: "Andy: Weird. I thought the city stopped our service months ago. "
                              +"Well, I guess we're now officially under water. ᕕ( ᐛ )ᕗ \n\n",delay:50});
     output_buffer.push({text: "[wait]",delay:0});
-    output_buffer.push({text: "[clear]",delay:0});
+    return proposition(output_buffer);
+}
+function help_studio(output_buffer){
+    output_buffer.push({text: "\nGreat! First I'll need you to find a publisher "
+                            + "for Wild Wackazoo Citizen Destroyer 3050.\n\n",delay: 10});
     return null;
+}
+function ending_bad(output_buffer){
+    output_buffer.push({text: "\nAndy: Oh well, I'll find another wa-",delay: 10});
+    output_buffer.push({text: " ",delay: 500});
+    output_buffer.push({text: "*crash*",delay: 0});
+    output_buffer.push({text: " ",delay: 500});
+    output_buffer.push({text: "\n\nThe aformentioned wrecking ball delivers a devastating "
+                            + "blow directly to Mr. Blazier's office.\n\n",delay: 50});
+    output_buffer.push({text: "[wait]",delay: 0});
+    return {text: "Try again?",commands: [{command: "y", sequence: proposition}
+                                         ,{command: "n", sequence: title_screen}]};
+    //return proposition(output_buffer);
+}
+export function proposition(output_buffer){
+    output_buffer.push({text: "[clear]",delay:0});
+    if (state.checkpoint == 0){
+        output_buffer.push({text: "Andrew Blazier: Blazier Games has to bring something "
+                                + "to market within 1 month, or else I'm out on the streets. "
+                                + "Only problem is, we have no publisher, which means no money, "
+                                + "and on top of that my last employee quit 2 weeks ago. "
+                                + "...something about black mold in the HVAC, whatever that means."
+                                + "Anyway! If I have any hope of getting this company back on "
+                                + "its feet, I'll need your help. So, whatd'ya say?\n\n",delay: 10});
+        //this breaks the game i guess
+        //output_buffer.push({text: "[checkpoint]",delay: 0});
+    }
+    return {text: "Help Mr. Blazier?",commands: [{command: "y", sequence: help_studio}
+                                                ,{command: "n", sequence: ending_bad}]};
 }

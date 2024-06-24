@@ -1,4 +1,5 @@
-import {typing} from "./output.js";
+import {typing
+       ,new_prompt} from "./output.js";
 import { curs_char } from "./main.js";
 
 export function handle_input(event,history,input_display,output_buffer,prompt){
@@ -25,7 +26,7 @@ export function handle_input(event,history,input_display,output_buffer,prompt){
                 }
             }
             if (sequence){
-                _prompt = sequence(output_buffer);
+                _prompt = new_prompt(output_buffer,sequence(output_buffer));
             }
             else{
                 output_buffer.push({text: "command not found: " + user_command, delay: 25});
@@ -54,6 +55,11 @@ function is_like_command(user_command,command){
     }
     if (command == "y"){
         if (_uc == "yes"){
+            return true;
+        }
+    }
+    if (command == "n"){
+        if (_uc == "no"){
             return true;
         }
     }
