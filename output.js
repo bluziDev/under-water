@@ -29,9 +29,9 @@ export function typing(elements,output_buffer){
                 history.value += "Continue ↵";
             }
             else if (command == "clear"){
-                if (history.value.length > 0){
+                let hist = history.value;
+                if (hist.slice(state.checkpoint).length > 0){
                     use_delay = 1;
-                    let hist = history.value;
                     history.value = hist.slice(0,state.checkpoint) + hist.slice(state.checkpoint + 2);
                 }
                 else{

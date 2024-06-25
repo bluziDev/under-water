@@ -5,6 +5,7 @@ export function title_screen(output_buffer){
     let greeting = templates.greeting;
     let credits = templates.credits;
 
+    state.checkpoint = 0;
     output_buffer.push({text: "[clear]", delay: 0});
     output_buffer.push({text: credits, delay: 100});
     //output_buffer.push({text: "\n", delay: 0});
@@ -78,9 +79,28 @@ export function opening_dialogue(output_buffer){
     return proposition(output_buffer);
 }
 function help_studio(output_buffer){
-    output_buffer.push({text: "\nGreat! First I'll need you to find a publisher "
+    state.checkpoint = 0;
+    output_buffer.push({text: "\nGreat! Welcome aboard! First I'll need you to find a publisher "
                             + "for Wild Wackazoo Citizen Destroyer 3050.\n\n",delay: 10});
-    return null;
+    output_buffer.push({text: "[wait]",delay: 0});
+
+    return find_publisher(output_buffer);
+}
+function find_publisher(output_buffer){
+    output_buffer.push({text: "[clear]",delay: 0});
+    output_buffer.push({text: "NEW OBJECTIVE:",delay:10});
+    output_buffer.push({text: " ",delay:250});
+    output_buffer.push({text: "Find Publisher\n\n",delay:10});
+    output_buffer.push({text: "[wait]",delay:0});
+    output_buffer.push({text: "Possible publishers: \n\n"
+                            + "    (1)Tame Publishing, Inc.\n"
+                            + "    (2)Andrea (Andrew's ex-girlfriend)\n"
+                            + "    (3)Sinister Digital, Inc.\n\n",delay:10});
+
+    return {text: "Which publisher will you choose?"
+           ,commands: [{command: "1", sequence: phone_tame}
+                      ,{command: "2", sequence: phone_tame}
+                      ,{command: "3", sequence: phone_tame}]};
 }
 function ending_bad(output_buffer){
     output_buffer.push({text: "\nAndy: Oh well, I'll find another wa-",delay: 10});
@@ -104,9 +124,22 @@ export function proposition(output_buffer){
                                 + "...something about black mold in the HVAC, whatever that means."
                                 + "Anyway! If I have any hope of getting this company back on "
                                 + "its feet, I'll need your help. So, whatd'ya say?\n\n",delay: 10});
-        //this breaks the game i guess
-        //output_buffer.push({text: "[checkpoint]",delay: 0});
+        
+        output_buffer.push({text: "[checkpoint]",delay: 0});
     }
     return {text: "Help Mr. Blazier?",commands: [{command: "y", sequence: help_studio}
                                                 ,{command: "n", sequence: ending_bad}]};
+}
+function phone_tame(output_buffer){
+    output_buffer.push({text: "You pick up the phone and dial Tame Publishing, Inc.'s headquarters...\n\n",delay:50});
+    output_buffer.push({text: "[wait]",delay:0});
+    output_buffer.push({text: "    *ringing*",delay:0});
+    output_buffer.push({text: " ",delay:1000});
+    output_buffer.push({text: "\n\nNo answer.\n\n",delay:50});
+    output_buffer.push({text: "[wait]",delay:0});
+    output_buffer.push({text: "You: I don't know what I was expecting...\n\n",delay:10});
+    output_buffer.push({text: "Funding not secured.\n",delay:10});
+    return {text: "Try another publisher?"
+           ,commands: [{command: "y", sequence: find_publisher}
+                      ,{command: "n", sequence: ending_bad}]};
 }

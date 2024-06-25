@@ -22,7 +22,8 @@ init_elements(input,history,input_display);
 //type a greeting for the user
 let greeting = document.getElementById("title").innerHTML;
 let credits = document.getElementById("opening_credits").innerHTML;
-export let templates = {greeting,credits};
+let objective = document.getElementById("objective").innerHTML;
+export let templates = {greeting,credits,objective};
 let output_buffer = [];
 //title_screen(output_buffer,credits,greeting);
 
