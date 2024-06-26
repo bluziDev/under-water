@@ -12,6 +12,10 @@ export const curs_char = "█";
 export const animate_typing = true;
 export const state = {
     checkpoint: 0
+   ,pipe_fixed: false
+   ,publisher: ""
+   ,programmer: ""
+   ,called_sinister: false
 };
 
 //initialize elements
@@ -29,8 +33,8 @@ let output_buffer = [];
 
 let prompt = null;
 //let start_prompt = {text: "start?",commands: [{command: "y", sequence: opening_dialogue}]};
-//prompt = new_prompt(output_buffer,title_screen(output_buffer));
-prompt = new_prompt(output_buffer,proposition(output_buffer));
+prompt = new_prompt(output_buffer,title_screen(output_buffer));
+//prompt = new_prompt(output_buffer,proposition(output_buffer));
 
 
 //start typing the greeting followed by the start prompt

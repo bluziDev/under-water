@@ -99,8 +99,8 @@ function find_publisher(output_buffer){
 
     return {text: "Which publisher will you choose?"
            ,commands: [{command: "1", sequence: phone_tame}
-                      ,{command: "2", sequence: phone_tame}
-                      ,{command: "3", sequence: phone_tame}]};
+                      ,{command: "2", sequence: phone_andrea}
+                      ,{command: "3", sequence: phone_sinister}]};
 }
 function ending_bad(output_buffer){
     output_buffer.push({text: "\nAndy: Oh well, I'll find another wa-",delay: 10});
@@ -115,6 +115,10 @@ function ending_bad(output_buffer){
     //return proposition(output_buffer);
 }
 export function proposition(output_buffer){
+    state.pipe_fixed =  false;
+    state.publisher = "";
+    state.programmer = "";
+    state.called_sinister = false;
     output_buffer.push({text: "[clear]",delay:0});
     if (state.checkpoint == 0){
         output_buffer.push({text: "Andrew Blazier: Blazier Games has to bring something "
@@ -138,8 +142,270 @@ function phone_tame(output_buffer){
     output_buffer.push({text: "\n\nNo answer.\n\n",delay:50});
     output_buffer.push({text: "[wait]",delay:0});
     output_buffer.push({text: "You: I don't know what I was expecting...\n\n",delay:10});
+    return no_funding(output_buffer);
+}
+function phone_andrea(output_buffer){
+    output_buffer.push({text: "You pick up the phone and dial Andrea...\n\n",delay:50});
+    output_buffer.push({text: "[wait]",delay:0});
+    output_buffer.push({text: "    *ringing*",delay:0});
+    output_buffer.push({text: " ",delay:500});
+    output_buffer.push({text: "    *ringing*",delay:0});
+    output_buffer.push({text: " ",delay:500});
+    output_buffer.push({text: "\n\n",delay:50});
+    output_buffer.push({text: "[wait]",delay:0});
+    output_buffer.push({text: "\"You've reached the voicemail box of Andrea Hartford\"\n\n",delay:10});
+    return {text: "Leave a message?"
+           ,commands: [{command: "y", sequence: message_andrea}
+                      ,{command: "n", sequence: no_funding}]};
+}
+function phone_sinister(output_buffer){
+    output_buffer.push({text: "You pick up the phone and dial Sinister Digital Inc.s' headquarters...\n\n",delay:50});
+    output_buffer.push({text: "[wait]",delay:0});
+    if (!state.called_sinister){
+        output_buffer.push({text: "The call is answered immediately\n\n",delay:50});
+        output_buffer.push({text: " ",delay:500});
+        output_buffer.push({text: "\"Yeeesssss?\"\n",delay:100});
+        output_buffer.push({text: " ",delay:250});
+        output_buffer.push({text: "\"You've reached The Devi- I mean, Sinister Digital...\"\n",delay:50});
+        output_buffer.push({text: " ",delay:250});
+        output_buffer.push({text: "\"How may I direct your caaallll?\"\n\n",delay:50});
+        output_buffer.push({text: "[wait]",delay:0});
+        output_buffer.push({text: "You: ...erm, publishing?\n\n",delay:10});
+        output_buffer.push({text: " ",delay:500});
+        output_buffer.push({text: "\"So, you want your game published, eh?"
+                                + " That's easy. I will make your game wildly successful!"
+                                + " All it will cost you is its sooouuulll. \"\n\n",delay:50});
+        output_buffer.push({text: "[wait]",delay:0});
+        output_buffer.push({text: "You: It's soul?\n\n",delay:10});
+        output_buffer.push({text: " ",delay:500});
+        output_buffer.push({text: "\"That's its*, no apostrophe, and yeeeesssss."
+                                + " Your game will be renowned globally, but, in exchange,"
+                                + " it will become the most widely marketable version of itself, "
+                                + "stripped of everything that makes it unique. So, whatd'you say?\"\n\n",delay:50});
+        state.called_sinister = true;
+    }
+    else{
+        output_buffer.push({text: "\"Called to eh, reconsider my offer have you?\n\n",delay:50});
+    }
+    return {text: "Do we have a deal?"
+           ,commands: [{command: "y", sequence: deal}
+                      ,{command: "n", sequence: no_deal}]};
+}
+function deal(output_buffer){
+    output_buffer.push({text: "\"Wonderful! *magical whooshing* I can't wait to see"
+                            + " your hard work get flushed down the toil- er.."
+                            + "recognized by millions!\"\n\n",delay:50});
+    output_buffer.push({text: "[wait]",delay:0});
+    state.publisher = "sinister";
+    return funding_secured(output_buffer);
+}
+function no_deal(output_buffer){
+    output_buffer.push({text: "\"It's a shame really, all that hard work going unnoticed...\"\n\n",delay:50});
+    output_buffer.push({text: "[wait]",delay:0});
+    return no_funding(output_buffer);
+}
+function no_funding(output_buffer){
     output_buffer.push({text: "Funding not secured.\n",delay:10});
     return {text: "Try another publisher?"
            ,commands: [{command: "y", sequence: find_publisher}
                       ,{command: "n", sequence: ending_bad}]};
+}
+function message_andrea(output_buffer){
+    output_buffer.push({text: "You: Uh, Hi Andrea this is Mr. Blazier's new employee.\n",delay:10});
+    output_buffer.push({text: "[wait]",delay:0});
+    output_buffer.push({text: "The thing is, Wild Wackazoo Civilian Destroyer 3050 needs a new publisher and...\n",delay:10});
+    output_buffer.push({text: "[wait]",delay:0});
+    output_buffer.push({text: "well, I was wondering if you could set aside Mr. Blazier's and your differences"
+                            + " and help us out. It would mean a lot.\n\n",delay:10});
+    output_buffer.push({text: "[wait]",delay:0});
+    return andrea_called(output_buffer);
+}
+function andrea_called(output_buffer){
+    output_buffer.push({text: "Mr. Blazier returns from his lunch break.\n\n",delay:50});
+    output_buffer.push({text: "[wait]",delay:0});
+    output_buffer.push({text: "Mr. Blazier: You won't believe it. Andrea called me back! "
+                            + "Whatever you said to her did the trick. She agreed to be our publisher!\n\n",delay:10});
+    output_buffer.push({text: "[wait]",delay:0});
+    output_buffer.push({text: "Mr. Blazier: Thank you. I knew you wouldn't let me down.\n\n",delay:10});
+    output_buffer.push({text: "[wait]",delay:0});
+    state.publisher = "andrea";
+    return funding_secured(output_buffer);
+}
+function funding_secured(output_buffer){
+    output_buffer.push({text: "[clear]",delay:0});
+    output_buffer.push({text: "Funding Secured\n\n",delay:50});
+    output_buffer.push({text: "Andrew: Great! All we need now is a programmer. Boy this water is getting really high.\n\n",delay:50});
+    output_buffer.push({text: "[wait]",delay:0});
+    return find_programmer(output_buffer);
+}
+function find_programmer(output_buffer){    
+    output_buffer.push({text: "[clear]",delay: 0});
+    output_buffer.push({text: "NEW OBJECTIVE:",delay:10});
+    output_buffer.push({text: " ",delay:250});
+    output_buffer.push({text: "Find Programmer\n\n",delay:10});
+    output_buffer.push({text: "[wait]",delay:0});
+    if (state.pipe_fixed){
+        output_buffer.push({text: "Possible Candidates: \n\n"
+                                + "    (1)Alien\n"
+                                + "    (2)Stean Jogs\n\n",delay:10});
+        return {text: "Which programmer will you interview?"
+            ,commands: [{command: "1", sequence: interview_alien}
+                        ,{command: "2", sequence: interview_stean}]};
+    }
+    else{
+        output_buffer.push({text: "Possible Candidates: \n\n"
+                                + "    (1)Plumber\n"
+                                + "    (2)Alien\n"
+                                + "    (3)Stean Jogs\n\n",delay:10});
+        return {text: "Which programmer will you interview?"
+            ,commands: [{command: "1", sequence: interview_plumber}
+                        ,{command: "2", sequence: interview_alien}
+                        ,{command: "3", sequence: interview_stean}]};
+    }
+}
+function interview_plumber(output_buffer){
+    output_buffer.push({text: "[clear]",delay: 0});
+    output_buffer.push({text: "RESUME\n\n",delay: 50});
+    output_buffer.push({text: "    Name: Hugh Bender\n",delay: 10});
+    output_buffer.push({text: "    Experience: 30 years fixing pipes\n\n",delay: 10});
+    output_buffer.push({text: "[wait]",delay:0});
+    output_buffer.push({text: "You: So, Mr. Bender, why do you want to work for Blazier Games?\n\n",delay:10});
+    output_buffer.push({text: " ",delay: 500});
+    output_buffer.push({text: "Plumber: I got a call about a leaky pipe *smoker's cough*\n\n",delay: 10});
+    output_buffer.push({text: "[wait]",delay:0});
+    output_buffer.push({text: "You: Oh, right. It's right over there.\n\n",delay:10});
+    output_buffer.push({text: "You point to the pipe protruding from the wall.\n",delay:50});
+    output_buffer.push({text: " ",delay: 250});
+    output_buffer.push({text: "The plumber spits the same color as the liquid "
+                            + "flooding the room and wades over to the source.\n\n",delay:50});
+    output_buffer.push({text: "[wait]",delay:0});
+    output_buffer.push({text: "PIPE FIXED\n\n",delay: 50});
+    state.pipe_fixed = true;
+    output_buffer.push({text: "[wait]",delay:0});
+    return find_programmer(output_buffer);
+}
+function interview_alien(output_buffer){
+    output_buffer.push({text: "[clear]",delay: 0});
+    output_buffer.push({text: "RESUME\n\n",delay: 50});
+    output_buffer.push({text: "    Name: Alien\n",delay: 10});
+    output_buffer.push({text: "    Experience: unknown\n\n",delay: 10});
+    output_buffer.push({text: "[wait]",delay:0});
+    output_buffer.push({text: "You: So, why do you want to work for Blazier Games?\n\n",delay:10});
+    output_buffer.push({text: " ",delay: 500});
+    output_buffer.push({text: "*alien sounds*\n\n",delay: 10});
+    output_buffer.push({text: " ",delay:500});
+    output_buffer.push({text: "You: ...\n\n",delay:10});
+    output_buffer.push({text: "[wait]",delay:0});
+    //state.interviewed_alien = true;
+    return {text: "Interview another programmer?", commands: [{command: "y", sequence: find_programmer}
+                                                             ,{command: "n", sequence: done_interviewing}]};
+}
+function interview_stean(output_buffer){
+    output_buffer.push({text: "[clear]",delay: 0});
+    output_buffer.push({text: "RESUME\n\n",delay: 50});
+    output_buffer.push({text: "    Name: Stean Jogs\n",delay: 10});
+    output_buffer.push({text: "    Experience: Mostly jogging, some programming\n\n",delay: 10});
+    output_buffer.push({text: "[wait]",delay:0});
+    output_buffer.push({text: "You: So, Mr. Jogs, why do you want to work for Blazier Games?\n\n",delay:10});
+    output_buffer.push({text: " ",delay: 500});
+    output_buffer.push({text: "Stean, who has not stopped jogging around the conference room "
+                            + "since he arrived: ",delay: 50});
+    output_buffer.push({text: "I have a feeling this will be kind of like running a marathon, and I love running!\n\n",delay: 10});
+    output_buffer.push({text: "[wait]",delay:0});
+    output_buffer.push({text: "You: I love your enthusiasm!\n\n",delay: 10});
+    output_buffer.push({text: " ",delay:500});
+    output_buffer.push({text: "Stean gives a nod as he squeezes another energy gel into his mouth.\n\n",delay: 50});
+    //state.interviewed_stean = true;
+    return {text: "Interview another programmer?", commands: [{command: "y", sequence: find_programmer}
+                                                             ,{command: "n", sequence: done_interviewing}]};
+}
+function done_interviewing(output_buffer){
+    output_buffer.push({text: "Applicants:\n\n"
+                            + "   (1)Alien\n"
+                            + "   (2)Stean\n"
+                            + "   (3)Back to interviewing\n\n",delay: 10});
+    return {text: "Which programmer will you hire?"
+        ,commands: [{command: "1", sequence: hired_alien}
+                    ,{command: "2", sequence: hired_stean}
+                    ,{command: "3", sequence: find_programmer}]};
+}
+function hired_alien(output_buffer){
+    state.programmer = "alien";
+    return programmer_secured(output_buffer);
+}
+function hired_stean(output_buffer){
+    state.programmer = "stean";
+    return programmer_secured(output_buffer);
+}
+function programmer_secured(output_buffer){
+    output_buffer.push({text: "[clear]",delay: 0});
+    output_buffer.push({text: "PROGRAMMER SECURED\n\n",delay: 50});
+    output_buffer.push({text: "[wait]",delay: 0});
+    output_buffer.push({text: "Mr. Blazier returns from his second lunch break.\n\n",delay: 50});
+    output_buffer.push({text: "\"So, how did the interviewing go?\"\n\n",delay: 10});
+    output_buffer.push({text: "[wait]",delay: 0});
+    output_buffer.push({text: "You: Great! I think our new employee is up to the task!\n\n",delay: 10});
+    output_buffer.push({text: " ",delay: 500});
+    output_buffer.push({text: "Mr. Blazier: Wonderful! Looks like we have everything we need.\n\n",delay: 10});
+    output_buffer.push({text: "[wait]",delay: 0});
+    return month_later(output_buffer);
+}
+function month_later(output_buffer){
+    output_buffer.push({text: "[clear]",delay: 0});
+    output_buffer.push({text: "1 MONTH LATER\n\n",delay: 50});
+    output_buffer.push({text: "[wait]",delay: 0});
+    if (state.programmer == "alien"){
+        output_buffer.push({text: "Andy was abducted by the alien.\n\n",delay: 50});
+        output_buffer.push({text: "[wait]",delay: 0});   
+        if (state.publisher == "andrea"){
+            output_buffer.push({text: "The game was never finished. ",delay: 50});
+            output_buffer.push({text: "Andrea went on to marry Stean Jogs and was never heard from again.\n\n",delay: 50});
+            output_buffer.push({text: "[wait]",delay: 0});           
+        }
+        else if (state.publisher == "sinister"){
+            output_buffer.push({text: "The game, despite not being finished, and due to some magical power, "
+                                    + "went on to become one of the most successful releases in history. "
+                                    + "Everyone knew about, bought, recommended, and sunk thousands of hours into "
+                                    + "Wild Wackazoo Citizen Destroyer 3050, a game that didn't exist.\n\n",delay: 50});
+            output_buffer.push({text: "[wait]",delay: 0});   
+        }
+    }
+    else if (state.pipe_fixed){
+        if (state.publisher == "andrea"){
+            output_buffer.push({text: "Andrew: Wild Wackazoo Citizen Destroyer 3050 is a hit! You've saved our studio. Thank you for all your help.\n\n",delay: 10});  
+            output_buffer.push({text: " ",delay: 500});  
+            output_buffer.push({text: "Andrew and Andrea got back together. Stean reignited Andrew's love for jogging.\n\n",delay: 50});  
+            output_buffer.push({text: "[wait]",delay: 0});  
+        }
+        else if (state.publisher == "sinister"){
+            output_buffer.push({text: "Andrew: Wild Wackazoo Citizen Destroyer 3050 is a hit! You've saved our studio. Thank you for all your help.\n\n",delay: 10});
+            output_buffer.push({text: "[wait]",delay: 0});  
+            output_buffer.push({text: "Andrew: Although, with all the changes the publisher requested, the game doesn't really "
+                                    + "feel like ours anymore...\n\n",delay: 10});
+            output_buffer.push({text: " ",delay: 500});  
+            output_buffer.push({text: "Andrea went on to marry the plumber and was never heard from again."
+                                    + " Andrew fell into a deep depression and became a muttering hobo. "
+                                    + "Stean Jogs won the olympic gold medal for jogging.\n\n",delay: 50});  
+            output_buffer.push({text: "[wait]",delay: 0});  
+        }
+    }
+    else {
+        output_buffer.push({text: "The pipe was never fixed and everyone inside the building drowned "
+                                + "in the murky water. The game was never finished and the bodies of Andrew and Stean "
+                                + "were buried under the rubble of the building formerly known as Blazier Games Inc.'s headquarters.\n\n",delay: 50});
+        output_buffer.push({text: "[wait]",delay: 0});           
+        if (state.publisher == "andrea"){
+            output_buffer.push({text: "Andrea went on to marry the Alien and was never heard from again.\n\n",delay: 50});
+            output_buffer.push({text: "[wait]",delay: 0});           
+        }
+        else if (state.publisher == "sinister"){
+            output_buffer.push({text: "The game however, despite not being finished, and due to some magical power, "
+                                    + "went on to become one of the most successful releases in history. "
+                                    + "Everyone knew about, bought, recommended, and sunk thousands of hours into "
+                                    + "Wild Wackazoo Citizen Destroyer 3050, a game that didn't exist.\n\n",delay: 50});
+            output_buffer.push({text: "[wait]",delay: 0});   
+        }
+    }
+    return {text: "Try for a different ending?",commands: [{command: "y", sequence: proposition}
+                                         ,{command: "n", sequence: title_screen}]};
 }
