@@ -9,7 +9,8 @@ import { title_screen
         ,proposition} from "./sequences.js";
 
 export const curs_char = "█";
-export const animate_typing = true;
+export let animate_typing = true;
+export let animation_lock = false;
 export const state = {
     checkpoint: 0
    ,pipe_fixed: false
@@ -40,22 +41,29 @@ prompt = new_prompt(output_buffer,title_screen(output_buffer));
 //start typing the greeting followed by the start prompt
 typing(elements,output_buffer);
 
-//handle input from user
-input.addEventListener("keydown",function (event){
-    prompt = handle_input(event,history,input_display,output_buffer,prompt);
-    if (prompt){
-        //prompt = new_prompt(output_buffer,prompt);
-    }
-});
-
 //continuing sequence
 window.addEventListener("keydown",function(event){
     if (event.key == "Enter" && input.disabled){
         let hist = history.value;
         if (hist.slice(hist.length - 10,hist.length) == "Continue ↵"){
+            animation_toggle(true);
             history.value = hist.slice(0,hist.length - 10);
             typing(elements,output_buffer);
         }
+        else {
+            animation_toggle(false);
+            if (animation_lock){
+                animation_lock = false;
+            }
+        }
+    }
+});
+
+//handle input from user
+input.addEventListener("keydown",function (event){
+    prompt = handle_input(event,history,input_display,output_buffer,prompt);
+    if (prompt){
+        //prompt = new_prompt(output_buffer,prompt);
     }
 });
 
@@ -75,4 +83,13 @@ window.addEventListener("mousemove", function(){
 //lock scroll to bottom of page
 window.onscroll = function(){
     window.scrollTo(0, document.body.scrollHeight);
+}
+//to turn typing animation on and off
+export function animation_toggle(animate){
+    if (!animation_lock){
+        animate_typing = animate;
+    }
+}
+export function animation_lock_toggle(lock){
+    animation_lock = lock;
 }

@@ -1,1 +1,2 @@
 -complete typing when enter is pressed
+tried to attempt that. fix whatever i did wrong

@@ -1,6 +1,9 @@
 import {typing
        ,new_prompt} from "./output.js";
-import { curs_char } from "./main.js";
+import { curs_char
+        ,animate_typing
+        ,animation_toggle
+        ,animation_lock_toggle} from "./main.js";
 
 export function handle_input(event,history,input_display,output_buffer,prompt){
     let _prompt = prompt;
@@ -11,6 +14,8 @@ export function handle_input(event,history,input_display,output_buffer,prompt){
         history.value = history.value + "\n";
         history.style.height = "auto";
         history.style.height = history.scrollHeight + "px";
+        animation_toggle(true);
+        animation_lock_toggle(true);
         input.disabled=true;
         input_display.value = "> " + input.value;
         let elements = {input,history,input_display};

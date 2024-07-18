@@ -1,6 +1,8 @@
 import { curs_char
         ,animate_typing
-        ,state} from "./main.js";
+        ,state
+        ,animation_toggle
+        ,animation_lock_toggle} from "./main.js";
 
 export function typing(elements,output_buffer){
     let input = elements.input;
@@ -81,6 +83,8 @@ export function typing(elements,output_buffer){
         }
     }
     else{
+        animation_toggle(true);
+        animation_lock_toggle(false);
         input.disabled = false;
         input_display.value = "> " + curs_char;
         input.focus();
